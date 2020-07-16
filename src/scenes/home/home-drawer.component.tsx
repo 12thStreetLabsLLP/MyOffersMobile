@@ -39,6 +39,11 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
         navigation.navigate("Libraries");
         return;
       }
+      case 2: {
+        navigation.toggleDrawer();
+        navigation.navigate("SignInUp4");
+        return;
+      }
     }
   };
 

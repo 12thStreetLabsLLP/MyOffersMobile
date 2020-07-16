@@ -7,6 +7,9 @@ import {
   StyleService,
   Text,
   useStyleSheet,
+  TopNavigation,
+  TopNavigationAction,
+  Datepicker,
 } from "@ui-kitten/components";
 import { ImageOverlay } from "./extra/image-overlay.component";
 import { ProfileAvatar } from "./extra/profile-avatar.component";
@@ -21,9 +24,15 @@ import {
   TwitterIcon,
 } from "./extra/icons";
 import { KeyboardAvoidingView } from "./extra/3rd-party";
+import { PhoneIcon } from "../sign-in-4/extra/icons";
+
+import {
+  ArrowIosBackIcon,
+  AssetDatepickerIcon,
+} from "../../../components/icons";
 
 export default ({ navigation }): React.ReactElement => {
-  const [userName, setUserName] = React.useState<string>();
+  const [FirstName, setFirstName] = React.useState<string>();
   const [email, setEmail] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
   const [termsAccepted, setTermsAccepted] = React.useState<boolean>(false);
@@ -46,6 +55,10 @@ export default ({ navigation }): React.ReactElement => {
   const renderPhotoButton = (): React.ReactElement => (
     <Button style={styles.editAvatarButton} size="small" icon={PlusIcon} />
   );
+  const renderBackAction = (): React.ReactElement => (
+    <TopNavigationAction icon={ArrowIosBackIcon} onPress={navigation.goBack} />
+  );
+  const [date, setDate] = React.useState(new Date());
 
   return (
     <KeyboardAvoidingView>
@@ -53,22 +66,34 @@ export default ({ navigation }): React.ReactElement => {
         style={styles.container}
         source={require("./assets/image-background.jpg")}
       >
-        <View style={styles.headerContainer}>
-          <ProfileAvatar
-            style={styles.profileAvatar}
-            resizeMode="center"
-            source={require("./assets/image-person.png")}
-            editButton={renderPhotoButton}
-          />
-        </View>
+        <TopNavigation title="Add Users" leftControl={renderBackAction()} />
+
         <View style={styles.formContainer}>
           <Input
             status="control"
             autoCapitalize="none"
-            placeholder="User Name"
+            placeholder="First Name"
             icon={PersonIcon}
-            value={userName}
-            onChangeText={setUserName}
+            value={FirstName}
+            onChangeText={setFirstName}
+          />
+          <Input
+            style={styles.formInput}
+            status="control"
+            autoCapitalize="none"
+            placeholder="Last Name"
+            icon={PersonIcon}
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Input
+            style={styles.formInput}
+            status="control"
+            autoCapitalize="none"
+            placeholder="Phone"
+            icon={PhoneIcon}
+            value={email}
+            onChangeText={setEmail}
           />
           <Input
             style={styles.formInput}
@@ -79,23 +104,13 @@ export default ({ navigation }): React.ReactElement => {
             value={email}
             onChangeText={setEmail}
           />
-          <Input
+          <Datepicker
             style={styles.formInput}
             status="control"
-            autoCapitalize="none"
-            secureTextEntry={!passwordVisible}
-            placeholder="Password"
-            icon={passwordVisible ? EyeIcon : EyeOffIcon}
-            value={password}
-            onChangeText={setPassword}
-            onIconPress={onPasswordIconPress}
-          />
-          <CheckBox
-            style={styles.termsCheckBox}
-            textStyle={styles.termsCheckBoxText}
-            text="I read and agree to Terms & Conditions"
-            checked={termsAccepted}
-            onChange={(checked: boolean) => setTermsAccepted(checked)}
+            date={date}
+            placeholder="Date of birth"
+            icon={AssetDatepickerIcon}
+            onSelect={(nextDate) => setDate(nextDate)}
           />
         </View>
         <Button
@@ -103,40 +118,7 @@ export default ({ navigation }): React.ReactElement => {
           size="giant"
           onPress={onSignUpButtonPress}
         >
-          SIGN UP
-        </Button>
-        <View style={styles.socialAuthContainer}>
-          <Text style={styles.socialAuthHintText} status="control">
-            Or Register Using Social Media
-          </Text>
-          <View style={styles.socialAuthButtonsContainer}>
-            <Button
-              appearance="ghost"
-              size="giant"
-              status="control"
-              icon={FacebookIcon}
-            />
-            <Button
-              appearance="ghost"
-              size="giant"
-              status="control"
-              icon={GoogleIcon}
-            />
-            <Button
-              appearance="ghost"
-              size="giant"
-              status="control"
-              icon={TwitterIcon}
-            />
-          </View>
-        </View>
-        <Button
-          style={styles.signInButton}
-          appearance="ghost"
-          status="control"
-          onPress={onSignInButtonPress}
-        >
-          Already have account? Sign In
+          ADD USER
         </Button>
       </ImageOverlay>
     </KeyboardAvoidingView>
@@ -181,6 +163,7 @@ const themedStyles = StyleService.create({
   },
   signUpButton: {
     marginHorizontal: 16,
+    marginBottom: 24,
   },
   signInButton: {
     marginVertical: 12,

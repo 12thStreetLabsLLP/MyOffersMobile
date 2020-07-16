@@ -13,9 +13,10 @@ import { AppStorage } from "../services/app-storage.service";
 import { Mapping, Theme, Theming } from "../services/theme.service";
 import { ApolloProvider } from "react-apollo";
 import makeApolloClient from "../services/apollo";
-import { AsyncStorage, Text, SafeAreaView } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { signIn, getToken } from "../services/util";
 import { setWorldOriginAsync } from "expo/build/AR";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const loadingTasks: Task[] = [
   // Should be used it when running Expo.
@@ -54,6 +55,7 @@ const App = ({ mapping, theme }): React.ReactElement => {
   );
 
   const [client, setClient] = React.useState(null);
+  const [Loading, setLoading] = React.useState<boolean>(true);
 
   const fetchSession = async () => {
     // fetch session
@@ -72,6 +74,7 @@ const App = ({ mapping, theme }): React.ReactElement => {
         client = makeApolloClient(res);
       }
       setClient(client);
+      setLoading(false);
     });
   };
 
@@ -81,7 +84,15 @@ const App = ({ mapping, theme }): React.ReactElement => {
 
   if (!client) {
     //alert("test 1");
-    return <Text>test</Text>;
+    return (
+      <View>
+        <Spinner
+          visible={Loading}
+          textContent={""}
+          textStyle={styles.spinnerTextStyle}
+        />
+      </View>
+    );
   } else {
     //alert("test 2");
     return (
@@ -125,3 +136,18 @@ export default (): React.ReactElement => (
     {(props) => <App {...props} />}
   </AppLoading>
 );
+const styles = StyleSheet.create({
+  spinnerTextStyle: {
+    color: "#FFF",
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: "center",
+    margin: 10,
+  },
+  instructions: {
+    textAlign: "center",
+    color: "#333333",
+    marginBottom: 5,
+  },
+});

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { ImageOverlay } from "./extra/image-overlay.component";
 import { EmailIcon } from "./extra/icons";
@@ -11,6 +11,9 @@ import { useMutation } from "@apollo/react-hooks";
 import makeApolloClient from "../../../services/apollo";
 import { getToken, signIn } from "../../../services/util";
 import Spinner from "react-native-loading-spinner-overlay";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
+import Constants from "expo-constants";
 
 export default ({ navigation, route }): React.ReactElement => {
   const [otp, setOTP] = React.useState<string>();
@@ -18,8 +21,12 @@ export default ({ navigation, route }): React.ReactElement => {
   let [Loading, setLoading] = React.useState<boolean>(false);
 
   const VERIFY_OTP = gql`
-    mutation($name: String!, $otp: String!) {
-      customerOTPVerification(name: $name, verifyCode: $otp) {
+    mutation($deviceToken: String!, $name: String!, $verifyCode: String!) {
+      customerOTPVerification(
+        deviceToken: $deviceToken
+        name: $name
+        verifyCode: $verifyCode
+      ) {
         data
         message
         status
@@ -29,30 +36,81 @@ export default ({ navigation, route }): React.ReactElement => {
 
   const [verifyOTP] = useMutation(VERIFY_OTP);
 
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      try {
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+      } catch (e) {
+        token = "654C4DB3-3F68-4969-8ED2-80EA16B46EB0";
+      }
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      // Notifications.setNotificationChannelAsync("default", {
+      //   name: "default",
+      //   importance: Notifications.AndroidImportance.MAX,
+      //   vibrationPattern: [0, 250, 250, 250],
+      //   lightColor: "#FF231F7C",
+      // });
+    }
+
+    return token;
+  };
+
   const onVerifyOTP = (): void => {
     setLoading(true);
-    verifyOTP({ variables: { name: name, otp: otp } }).then(
-      (res) => {
-        console.log(res);
-        let updatedTokenId = res.data.customerOTPVerification.data.accessToken;
-        let userId = res.data.customerOTPVerification.data.id;
-        console.log("Got new token");
-        console.log(updatedTokenId);
-        signIn(updatedTokenId);
-        console.log("saved the new user token");
 
-        makeApolloClient(updatedTokenId);
-        setLoading(false);
+    registerForPushNotificationsAsync().then((deviceToken) => {
+      console.log("device Token" + deviceToken);
+      console.log("name" + name);
+      console.log("otp" + otp);
+      verifyOTP({
+        variables: {
+          deviceToken: deviceToken,
+          name: "+91" + name,
+          verifyCode: otp,
+        },
+      }).then(
+        (res) => {
+          console.log(res);
+          let updatedTokenId =
+            res.data.customerOTPVerification.data.accessToken;
+          let userId = res.data.customerOTPVerification.data.id;
+          console.log("Got new token");
+          console.log(updatedTokenId);
+          signIn(updatedTokenId);
+          console.log("saved the new user token");
 
-        navigation.navigate("Trainings2");
-      },
-      (err) => {
-        setLoading(false);
+          makeApolloClient(updatedTokenId);
+          setLoading(false);
 
-        console.log(err);
-        alert("Your verification code is invalid, Please try again.");
-      }
-    );
+          navigation.navigate("Trainings2");
+        },
+        (err) => {
+          setLoading(false);
+
+          console.log(err);
+          alert("Your verification code is invalid, Please try again.");
+        }
+      );
+    });
   };
 
   return (

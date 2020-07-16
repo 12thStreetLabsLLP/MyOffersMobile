@@ -2,22 +2,18 @@ import React from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { ImageOverlay } from "./extra/image-overlay.component";
-import {
-  EyeIcon,
-  EyeOffIcon,
-  FacebookIcon,
-  GoogleIcon,
-  PersonIcon,
-  TwitterIcon,
-  PhoneIcon,
-} from "./extra/icons";
+import { PhoneIcon } from "./extra/icons";
 import { KeyboardAvoidingView } from "./extra/3rd-party";
 import { withApollo, useApolloClient } from "react-apollo";
+import { Platform } from "react-native";
 
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { getToken } from "../../../services/util";
 import Spinner from "react-native-loading-spinner-overlay";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
+import Constants from "expo-constants";
 
 export default ({ navigation }): React.ReactElement => {
   const [email, setEmail] = React.useState<string>();
@@ -63,6 +59,7 @@ export default ({ navigation }): React.ReactElement => {
     setLoading(true);
     sendSMS({ variables: { name: "+91" + email } }).then(
       (res) => {
+        //console.log(token);
         setLoading(false);
         navigation.navigate("OTPVerification", {
           name: email,

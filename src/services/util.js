@@ -1,6 +1,6 @@
 import { AsyncStorage } from "react-native";
 
-const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_5";
+const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_9";
 
 let token;
 
