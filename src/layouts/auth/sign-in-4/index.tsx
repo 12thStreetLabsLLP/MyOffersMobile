@@ -45,7 +45,7 @@ export default ({ navigation }): React.ReactElement => {
     (res) => {
       console.log(res);
       if (res) {
-        navigation.navigate("Trainings2");
+        navigation.navigate("ProductListing");
       }
     },
     (err) => {

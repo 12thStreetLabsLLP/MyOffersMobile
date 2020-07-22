@@ -12,8 +12,8 @@ import { HomeBottomNavigation } from "../scenes/home/home-bottom-navigation.comp
 import { HomeDrawer } from "../scenes/home/home-drawer.component";
 import { LibrariesScreen } from "../scenes/libraries/libraries.component";
 import { SignIn4Screen } from "../scenes/auth/sign-in-4.component";
-import { Trainings2Screen } from "../scenes/dashboards/trainings-2.component";
-import { SignUp4Screen } from "../scenes/auth/sign-up-4.component";
+import { ProductListingScreen } from "../scenes/dashboards/product-listing.component";
+import { AddUserScreen } from "../scenes/auth/add-user.component";
 import { ProductDetails4Screen } from "../scenes/ecommerce/product-details-4.component";
 import { ForgotPasswordScreen } from "../scenes/auth/forgot-password.component";
 import { OTPVerificationScreen } from "../scenes/auth/otp-verification.component";
@@ -52,7 +52,7 @@ tokenId.then((res) => {
   if (res == null) {
     initialLoginPage = "SignIn4";
   } else {
-    initialLoginPage = "Trainings2";
+    initialLoginPage = "ProductListing";
   }
   console.log("home navigator - login screen");
   console.log(initialLoginPage);
@@ -79,8 +79,8 @@ export const HomeNavigator = (): React.ReactElement => (
     <Drawer.Screen name="Home" component={HomeTabsNavigator} />
     <Drawer.Screen name="Libraries" component={LibrariesScreen} />
     <Drawer.Screen name="SignIn4" component={SignIn4Screen} />
-    <Drawer.Screen name="SignInUp4" component={SignUp4Screen} />
-    <Drawer.Screen name="Trainings2" component={Trainings2Screen} />
+    <Drawer.Screen name="SignInUp4" component={AddUserScreen} />
+    <Drawer.Screen name="ProductListing" component={ProductListingScreen} />
     <Drawer.Screen
       name="ProductDetails4"
       initialParams={{ details: "" }}

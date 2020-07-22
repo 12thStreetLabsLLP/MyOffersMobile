@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "524423281084",
+    "firebase_url": "https://myoffer-12thstreetlabs.firebaseio.com",
+    "project_id": "myoffer-12thstreetlabs",
+    "storage_bucket": "myoffer-12thstreetlabs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:524423281084:android:6ce84d6275ea4e1a9313b9",
+        "android_client_info": {
+          "package_name": "com.name.myoffers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "524423281084-6235r08jakf9sj3g0jvslvphlo9irb07.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy5EseUpP0E2lV_SYoDIVD-YD33bwcHZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "524423281084-6235r08jakf9sj3g0jvslvphlo9irb07.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

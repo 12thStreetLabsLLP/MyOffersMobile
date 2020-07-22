@@ -13,10 +13,13 @@ import { AppStorage } from "../services/app-storage.service";
 import { Mapping, Theme, Theming } from "../services/theme.service";
 import { ApolloProvider } from "react-apollo";
 import makeApolloClient from "../services/apollo";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { signIn, getToken } from "../services/util";
 import { setWorldOriginAsync } from "expo/build/AR";
 import Spinner from "react-native-loading-spinner-overlay";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
 
 const loadingTasks: Task[] = [
   // Should be used it when running Expo.
@@ -78,7 +81,43 @@ const App = ({ mapping, theme }): React.ReactElement => {
     });
   };
 
+  const registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Permissions.askAsync(
+          Permissions.NOTIFICATIONS
+        );
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      const token = await Notifications.getExpoPushTokenAsync();
+      if (token) {
+        console.log(token);
+        this.setState({ expoPushToken: token });
+      }
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.createChannelAndroidAsync("default", {
+        name: "default",
+        sound: true,
+        priority: "max",
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+
   React.useEffect(() => {
+    registerForPushNotificationsAsync();
     fetchSession();
   }, []);
 

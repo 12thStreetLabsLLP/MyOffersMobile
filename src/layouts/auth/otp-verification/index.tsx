@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Platform } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { ImageOverlay } from "./extra/image-overlay.component";
@@ -9,7 +9,7 @@ import { AsyncStorage } from "react-native";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import makeApolloClient from "../../../services/apollo";
-import { getToken, signIn } from "../../../services/util";
+import { getExpoPushToken, signIn } from "../../../services/util";
 import Spinner from "react-native-loading-spinner-overlay";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
@@ -43,6 +43,7 @@ export default ({ navigation, route }): React.ReactElement => {
         Permissions.NOTIFICATIONS
       );
       let finalStatus = existingStatus;
+      alert(finalStatus);
       if (existingStatus !== "granted") {
         const { status } = await Permissions.askAsync(
           Permissions.NOTIFICATIONS
@@ -54,28 +55,70 @@ export default ({ navigation, route }): React.ReactElement => {
         return;
       }
       try {
-        token = (await Notifications.getExpoPushTokenAsync()).data;
+        token = (token = await Notifications.getDevicePushTokenAsync()).data;
+        alert("device token" + token);
       } catch (e) {
         token = "654C4DB3-3F68-4969-8ED2-80EA16B46EB0";
+        alert("fake token" + token);
       }
     } else {
       alert("Must use physical device for Push Notifications");
     }
 
     if (Platform.OS === "android") {
-      // Notifications.setNotificationChannelAsync("default", {
-      //   name: "default",
-      //   importance: Notifications.AndroidImportance.MAX,
-      //   vibrationPattern: [0, 250, 250, 250],
-      //   lightColor: "#FF231F7C",
-      // });
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
     }
 
     return token;
   };
 
+  const getPushNotificationPermissions = async () => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== "granted") {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== "granted") {
+      return;
+    }
+    console.log(finalStatus);
+
+    // Get the token that uniquely identifies this device
+    console.log(
+      "Notification Token: ",
+      await Notifications.getExpoPushTokenAsync()
+    );
+  };
+
+  useEffect(() => {
+    getPushNotificationPermissions();
+  });
+
   const onVerifyOTP = (): void => {
     setLoading(true);
+
+    alert(getExpoPushToken());
+    alert("get expo token from storage");
+    console.log("get expo token from storage");
+    getExpoPushToken().then((res) => {
+      alert(res);
+      console.log(res);
+    });
 
     registerForPushNotificationsAsync().then((deviceToken) => {
       console.log("device Token" + deviceToken);
@@ -93,15 +136,16 @@ export default ({ navigation, route }): React.ReactElement => {
           let updatedTokenId =
             res.data.customerOTPVerification.data.accessToken;
           let userId = res.data.customerOTPVerification.data.id;
+          let roleId = res.data.customerOTPVerification.data.roleId;
           console.log("Got new token");
           console.log(updatedTokenId);
-          signIn(updatedTokenId);
+          signIn(updatedTokenId, userId, roleId);
           console.log("saved the new user token");
 
           makeApolloClient(updatedTokenId);
           setLoading(false);
 
-          navigation.navigate("Trainings2");
+          navigation.navigate("ProductListing");
         },
         (err) => {
           setLoading(false);

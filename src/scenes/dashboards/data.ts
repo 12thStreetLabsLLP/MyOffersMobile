@@ -1,4 +1,4 @@
-import { LayoutItem } from '../../model/layout-item.model';
+import { LayoutItem } from "../../model/layout-item.model";
 
 export interface DashboardData extends LayoutItem {
   route: string;
@@ -6,21 +6,21 @@ export interface DashboardData extends LayoutItem {
 
 export const data: DashboardData[] = [
   {
-    title: 'Trainings',
-    description: 'Option 1',
-    image: require('../../assets/images/image-layout-training-1.jpg'),
-    route: 'Trainings1',
+    title: "Trainings",
+    description: "Option 1",
+    image: require("../../assets/images/image-layout-training-1.jpg"),
+    route: "Trainings1",
   },
   {
-    title: 'Trainings',
-    description: 'Option 2',
-    image: require('../../assets/images/image-layout-training-2.jpg'),
-    route: 'Trainings2',
+    title: "Trainings",
+    description: "Option 2",
+    image: require("../../assets/images/image-layout-training-2.jpg"),
+    route: "ProductListing",
   },
   {
-    title: 'Settings',
-    description: 'Option 1',
-    image: require('../../assets/images/image-layout-settings.jpg'),
-    route: 'Settings',
+    title: "Settings",
+    description: "Option 1",
+    image: require("../../assets/images/image-layout-settings.jpg"),
+    route: "Settings",
   },
 ];

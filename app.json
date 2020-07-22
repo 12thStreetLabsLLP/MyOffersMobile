@@ -5,16 +5,17 @@
     "version": "2.4.0",
     "sdkVersion": "36.0.0",
     "description": "My offers app for showing awesome deals",
-    "githubUrl": "https://github.com/akveo/kittenTricks",
+    "githubUrl": "https://github.com/12th/kittenTricks",
     "ios": {
-      "bundleIdentifier": "com.akveo.kittentricks",
+      "bundleIdentifier": "com.name.myoffers",
       "appStoreUrl": "https://itunes.apple.com/us/app/kitten-tricks/id1246143230",
       "buildNumber": "3"
     },
     "android": {
-      "package": "com.akveo.kittenTricks",
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.akveo.kittenTricks",
-      "versionCode": 3
+      "package": "com.name.myoffers",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.12th.kittenTricks",
+      "versionCode": 3,
+      "googleServicesFile": "./google-services.json"
     },
     "privacy": "public",
     "platforms": ["ios", "android", "web"],

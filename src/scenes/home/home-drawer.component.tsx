@@ -31,7 +31,7 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
     switch (index) {
       case 0: {
         navigation.toggleDrawer();
-        navigation.navigate("Trainings2");
+        navigation.navigate("ProductListing");
         return;
       }
       case 1: {
