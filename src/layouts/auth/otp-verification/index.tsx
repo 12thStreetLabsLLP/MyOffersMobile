@@ -36,47 +36,6 @@ export default ({ navigation, route }): React.ReactElement => {
 
   const [verifyOTP] = useMutation(VERIFY_OTP);
 
-  const registerForPushNotificationsAsync = async () => {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-      );
-      let finalStatus = existingStatus;
-      alert(finalStatus);
-      if (existingStatus !== "granted") {
-        const { status } = await Permissions.askAsync(
-          Permissions.NOTIFICATIONS
-        );
-        finalStatus = status;
-      }
-      if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
-      }
-      try {
-        token = (token = await Notifications.getDevicePushTokenAsync()).data;
-        alert("device token" + token);
-      } catch (e) {
-        token = "654C4DB3-3F68-4969-8ED2-80EA16B46EB0";
-        alert("fake token" + token);
-      }
-    } else {
-      alert("Must use physical device for Push Notifications");
-    }
-
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
-
-    return token;
-  };
-
   const getPushNotificationPermissions = async () => {
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
@@ -109,52 +68,48 @@ export default ({ navigation, route }): React.ReactElement => {
     getPushNotificationPermissions();
   });
 
-  const onVerifyOTP = (): void => {
+  const onVerifyOTP = async (): Promise<void> => {
     setLoading(true);
 
-    alert(getExpoPushToken());
-    alert("get expo token from storage");
-    console.log("get expo token from storage");
-    getExpoPushToken().then((res) => {
-      alert(res);
-      console.log(res);
-    });
+    // registerForPushNotificationsAsync().then((deviceToken) => {
+    let deviceToken = await getExpoPushToken();
+    console.log("device Token" + deviceToken);
+    console.log("name" + name);
+    console.log("otp" + otp);
+    alert(deviceToken);
+    verifyOTP({
+      variables: {
+        deviceToken: deviceToken,
+        name: "+91" + name,
+        verifyCode: otp,
+      },
+    }).then(
+      (res) => {
+        console.log(res);
+        alert("new token");
+        alert(res.data.customerOTPVerification.data.accessToken);
 
-    registerForPushNotificationsAsync().then((deviceToken) => {
-      console.log("device Token" + deviceToken);
-      console.log("name" + name);
-      console.log("otp" + otp);
-      verifyOTP({
-        variables: {
-          deviceToken: deviceToken,
-          name: "+91" + name,
-          verifyCode: otp,
-        },
-      }).then(
-        (res) => {
-          console.log(res);
-          let updatedTokenId =
-            res.data.customerOTPVerification.data.accessToken;
-          let userId = res.data.customerOTPVerification.data.id;
-          let roleId = res.data.customerOTPVerification.data.roleId;
-          console.log("Got new token");
-          console.log(updatedTokenId);
-          signIn(updatedTokenId, userId, roleId);
-          console.log("saved the new user token");
+        let updatedTokenId = res.data.customerOTPVerification.data.accessToken;
+        let userId = res.data.customerOTPVerification.data.id;
+        let roleId = res.data.customerOTPVerification.data.roleId;
+        console.log("Got new token");
+        console.log(updatedTokenId);
+        signIn(updatedTokenId, userId, roleId);
+        console.log("saved the new user token");
 
-          makeApolloClient(updatedTokenId);
-          setLoading(false);
+        makeApolloClient(updatedTokenId);
+        setLoading(false);
 
-          navigation.navigate("ProductListing");
-        },
-        (err) => {
-          setLoading(false);
+        navigation.navigate("ProductListing");
+      },
+      (err) => {
+        setLoading(false);
 
-          console.log(err);
-          alert("Your verification code is invalid, Please try again.");
-        }
-      );
-    });
+        console.log(err);
+        alert("Your verification code is invalid, Please try again.");
+      }
+    );
+    // });
   };
 
   return (

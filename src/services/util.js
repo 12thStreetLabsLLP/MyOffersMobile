@@ -1,7 +1,7 @@
 import { AsyncStorage } from "react-native";
 import gql from "graphql-tag";
 
-const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_10";
+const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_11";
 import { useQuery } from "@apollo/react-hooks";
 import * as Location from "expo-location";
 

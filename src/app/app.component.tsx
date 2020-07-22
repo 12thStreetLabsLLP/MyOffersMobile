@@ -14,13 +14,12 @@ import { Mapping, Theme, Theming } from "../services/theme.service";
 import { ApolloProvider } from "react-apollo";
 import makeApolloClient from "../services/apollo";
 import { StyleSheet, View, Platform } from "react-native";
-import { signIn, getToken } from "../services/util";
+import { signIn, getToken, saveExpoToken } from "../services/util";
 import { setWorldOriginAsync } from "expo/build/AR";
 import Spinner from "react-native-loading-spinner-overlay";
 import Constants from "expo-constants";
-import * as Notifications from "expo-notifications";
+import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
-
 const loadingTasks: Task[] = [
   // Should be used it when running Expo.
   // In Bare RN Project this is configured by react-native.config.js
@@ -99,8 +98,9 @@ const App = ({ mapping, theme }): React.ReactElement => {
       }
       const token = await Notifications.getExpoPushTokenAsync();
       if (token) {
+        alert(token);
         console.log(token);
-        this.setState({ expoPushToken: token });
+        saveExpoToken(token);
       }
     } else {
       alert("Must use physical device for Push Notifications");

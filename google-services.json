@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "524423281084",
-    "firebase_url": "https://myoffer-12thstreetlabs.firebaseio.com",
-    "project_id": "myoffer-12thstreetlabs",
-    "storage_bucket": "myoffer-12thstreetlabs.appspot.com"
+    "project_number": "826864089651",
+    "firebase_url": "https://myoffers-eb2d0.firebaseio.com",
+    "project_id": "myoffers-eb2d0",
+    "storage_bucket": "myoffers-eb2d0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:524423281084:android:6ce84d6275ea4e1a9313b9",
+        "mobilesdk_app_id": "1:826864089651:android:17db4c0852aabb8f524146",
         "android_client_info": {
           "package_name": "com.name.myoffers"
         }
       },
       "oauth_client": [
         {
-          "client_id": "524423281084-6235r08jakf9sj3g0jvslvphlo9irb07.apps.googleusercontent.com",
+          "client_id": "826864089651-5g4m1ioju9oq1ac5qkqsp78lmjp5p190.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAy5EseUpP0E2lV_SYoDIVD-YD33bwcHZ8"
+          "current_key": "AIzaSyA9dMEufPOU07Lgm0dHHJ1QcfGE9pkMZwk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "524423281084-6235r08jakf9sj3g0jvslvphlo9irb07.apps.googleusercontent.com",
+              "client_id": "826864089651-5g4m1ioju9oq1ac5qkqsp78lmjp5p190.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

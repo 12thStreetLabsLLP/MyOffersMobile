@@ -2,7 +2,7 @@
   "expo": {
     "name": "My Offers",
     "slug": "my-offers",
-    "version": "2.4.0",
+    "version": "1.0.0",
     "sdkVersion": "36.0.0",
     "description": "My offers app for showing awesome deals",
     "githubUrl": "https://github.com/12th/kittenTricks",
