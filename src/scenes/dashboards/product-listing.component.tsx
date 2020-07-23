@@ -43,11 +43,23 @@ export const ProductListingScreen = ({ navigation }): React.ReactElement => {
       color: "#333333",
       marginBottom: 5,
     },
+    topNavigation: {
+      backgroundColor: "#633d66",
+      color: "#FFFFFF",
+    },
+    topNavigationColor: {
+      color: "#FFFFFF",
+    },
   });
 
   return (
     <SafeAreaLayout style={styles.container} insets="top">
-      <TopNavigation title="My Offers" leftControl={renderBackAction()} />
+      <TopNavigation
+        titleStyle={styles.topNavigationColor}
+        style={styles.topNavigation}
+        title="My Offers"
+        leftControl={renderBackAction()}
+      />
       {L && <ContentView navigation={navigation} gps={L} />}
       {!L && (
         <Spinner
