@@ -32,7 +32,12 @@ export const ProductDetails4Screen = ({
 
   return (
     <SafeAreaLayout style={styles.container} insets="top">
-      <TopNavigation title="Offer Details" leftControl={renderBackAction()} />
+      <TopNavigation
+        titleStyle={styles.topNavigationColor}
+        style={styles.topNavigation}
+        title="Offer Details"
+        leftControl={renderBackAction()}
+      />
       <ContentView navigation={navigation} route={route} />
     </SafeAreaLayout>
   );
@@ -41,5 +46,12 @@ export const ProductDetails4Screen = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  topNavigation: {
+    backgroundColor: "#633d66",
+    color: "#FFFFFF",
+  },
+  topNavigationColor: {
+    color: "#FFFFFF",
   },
 });

@@ -98,7 +98,7 @@ const App = ({ mapping, theme }): React.ReactElement => {
       }
       const token = await Notifications.getExpoPushTokenAsync();
       if (token) {
-        alert(token);
+        //alert(token);
         console.log(token);
         saveExpoToken(token);
       }

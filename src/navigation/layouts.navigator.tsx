@@ -3,7 +3,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AuthNavigator } from "./auth.navigator";
 
 import { DashboardsNavigator } from "./dashboards.navigator";
-import { EcommerceNavigator } from "./ecommerce.navigator";
 import { LayoutsScreen } from "../scenes/layouts/layouts.component";
 
 const Stack = createStackNavigator();

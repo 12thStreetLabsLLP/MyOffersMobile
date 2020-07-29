@@ -1,7 +1,7 @@
 import { AsyncStorage } from "react-native";
 import gql from "graphql-tag";
 
-const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_11";
+const AUTH_TOKEN_KEY = "AUTH_TOKEN_NEW_21";
 import { useQuery } from "@apollo/react-hooks";
 import * as Location from "expo-location";
 
@@ -16,16 +16,34 @@ export const getToken = async () => {
   return token;
 };
 
+export const getPermission = async () => {
+  roleId = await AsyncStorage.getItem("ROLE_ID");
+  return roleId;
+};
+
+export const getUserId = async () => {
+  userId = await AsyncStorage.getItem("USER_ID_TOKEN");
+  return userId;
+};
+
 export const getGPS = async () => {
   token = await AsyncStorage.getItem("location");
   return token;
 };
 
-export const signIn = (newToken, userId = "", roleId = "") => {
+export const signIn = (newToken) => {
   token = newToken;
-  AsyncStorage.setItem("USER_ID", userId);
-  AsyncStorage.setItem("ROLE_ID", roleId);
+
   return AsyncStorage.setItem(AUTH_TOKEN_KEY, newToken);
+};
+
+export const setUserId = (userId) => {
+  alert(userId);
+  return AsyncStorage.setItem("USER_ID_TOKEN", userId);
+};
+
+export const setRole = (role) => {
+  return AsyncStorage.setItem("ROLE_ID", role);
 };
 
 export const saveExpoToken = (newToken) => {
@@ -54,6 +72,23 @@ export const getLocation = async () => {
 export const storeGPS = (location) => {
   return AsyncStorage.setItem("location", "1");
 };
+
+// export const getUserRole = async () => {
+//   let userId = await getUserId();
+
+//   if (userId) {
+//     const USER_ROLE = `
+//     {
+//       Users_by_pk(id: 22) {
+//         Role {
+//           role
+//         }
+//       }
+//     }
+//   `;
+//     return useQuery(USER_ROLE);
+//   }
+// };
 
 export const addUser = async (email, name, date, FirstName, LastName) => {
   const ADD_USER = gql`
@@ -126,7 +161,22 @@ export const getOffers = async (lat, long, radius) => {
     }
   `;
 
+  console.log({ lat: lat, lon: long, radius: radius });
+
   return useQuery(FETCH_OFFERS, {
     variables: { lat: lat, lon: long, radius: radius },
   });
+};
+
+export const getCategories = async () => {
+  const FETCH_OFFERS = gql`
+    query {
+      Category {
+        categoryName
+        categoryId
+      }
+    }
+  `;
+
+  return useQuery(FETCH_OFFERS);
 };

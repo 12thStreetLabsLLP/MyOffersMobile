@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Share,
 } from "react-native";
-import { Card, List, Text, Button } from "@ui-kitten/components";
+import { Card, List, Text, Modal, Button } from "@ui-kitten/components";
 import { Training } from "./extra/data";
 import { useState, useEffect } from "react";
 import {
@@ -16,13 +16,17 @@ import {
   storeGPS,
   getGPS,
 } from "../../../services/util";
+import { Icon } from "@ui-kitten/components";
 
-const trainings: Training[] = [];
+let trainings: Training[] = [];
 
-export default ({ navigation, gps }): React.ReactElement => {
+export default ({ navigation, gps, r }): React.ReactElement => {
   const [location, setLocation] = React.useState<any>(null);
   const [packageSearch, setPackageSearch] = useState<string>("");
   const [result, setResult] = useState<string>("");
+  const [offerslist, setOfferslist] = useState<any>();
+
+  let radius = 100000000;
 
   const renderItemHeader = (
     info: ListRenderItemInfo<Training>
@@ -40,16 +44,50 @@ export default ({ navigation, gps }): React.ReactElement => {
       });
   };
 
+  getOffers(
+    gps.coords.latitude.toString(),
+    gps.coords.longitude.toString(),
+    radius
+  ).then((res) => {
+    let { data } = res;
+
+    console.log("---------Got Result--------------");
+    console.log(data);
+
+    let offers = data && data.getNearestOffers ? data.getNearestOffers : [];
+    if (offers.length == 0) {
+      trainings = [];
+    }
+    offers.forEach((res) => {
+      trainings.push(
+        new Training(
+          res.title,
+          30,
+          150,
+          res.image,
+          res.text,
+          res.Address.addresss,
+          "FUNCODE"
+        )
+      );
+    });
+
+    setOfferslist(trainings);
+  });
+
   const getOffersData = async (gps) => {
+    console.log("gps");
     console.log(gps);
-    const { data } = await getOffers(12.717875, 77.281231, 10);
-    // const { data } = await getOffers(
-    //   gps.coords.latitude,
-    //   gps.coords.longitude,
-    //   10
-    // );
+    alert(gps.coords.latitude);
+    alert(gps.coords.longitude);
+    const { data } = await getOffers(
+      gps.coords.latitude,
+      gps.coords.longitude,
+      radius
+    );
 
     if (data) {
+      trainings = [];
       //console.log(data);
       const offers = data.getNearestOffers;
 
@@ -60,19 +98,23 @@ export default ({ navigation, gps }): React.ReactElement => {
             30,
             150,
             res.image,
-            "Great offers going on...",
+            res.text,
             res.Address.addresss,
             "FUNCODE"
           )
         );
       });
+
+      //alert(trainings);
+    } else {
+      alert("no data");
     }
   };
 
-  if (gps) {
-    console.log(gps);
-    getOffersData(gps);
-  }
+  // if (gps) {
+  //   console.log(gps);
+  //getOffersData(gps);
+  // }
 
   const onShare = async (text) => {
     try {
@@ -93,6 +135,17 @@ export default ({ navigation, gps }): React.ReactElement => {
     }
   };
 
+  const stylesIcon = StyleSheet.create({
+    icon: {
+      width: 32,
+      height: 32,
+      alignSelf: "flex-end",
+    },
+    backdrop: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+  });
+
   const renderItem = (
     info: ListRenderItemInfo<Training>
   ): React.ReactElement => (
@@ -109,20 +162,31 @@ export default ({ navigation, gps }): React.ReactElement => {
           <Text style={{ color: "#FFF" }}>{info.item.location}</Text>
         </View>
         <View style={styles.itemFooter}>
-          <Text style={{ color: "#FFF" }}>Coupon code - {info.item.code}</Text>
+          <Text style={{ color: "#FFF" }}>{info.item.description}</Text>
         </View>
-        <Button
-          appearance="ghost"
-          status="basic"
+
+        <Icon
           onPress={() => onShare(info.item.title)}
-        >
-          Share
-        </Button>
+          style={stylesIcon.icon}
+          fill="#FFFFFF"
+          name="share"
+        />
       </Card>
     </TouchableOpacity>
   );
 
-  return <List style={styles.list} data={trainings} renderItem={renderItem} />;
+  // trainings.push(
+  //   new Training("test", 30, 150, "test", "test", "test", "FUNCODE")
+  // );
+
+  //getOffersData(gps);
+  if (trainings.length > 0) {
+    return (
+      <List style={styles.list} data={offerslist} renderItem={renderItem} />
+    );
+  } else {
+    return <Text>Not found</Text>;
+  }
 };
 
 const styles = StyleSheet.create({

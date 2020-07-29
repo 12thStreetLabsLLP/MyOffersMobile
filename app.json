@@ -3,7 +3,6 @@
     "name": "My Offers",
     "slug": "my-offers",
     "version": "1.0.0",
-    "sdkVersion": "36.0.0",
     "description": "My offers app for showing awesome deals",
     "githubUrl": "https://github.com/12th/kittenTricks",
     "ios": {
@@ -18,7 +17,11 @@
       "googleServicesFile": "./google-services.json"
     },
     "privacy": "public",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./src/assets/images/image-app-icon.png",

@@ -12,21 +12,34 @@ import {
   MenuItemType,
   Text,
 } from "@ui-kitten/components";
-import { BookIcon, GithubIcon } from "../../components/icons";
+import {
+  BookIcon,
+  TrendingIcon,
+  UserAddIcon,
+  UserUpdateIcon,
+} from "../../components/icons";
 import { SafeAreaLayout } from "../../components/safe-area-layout.component";
 import { WebBrowserService } from "../../services/web-browser.service";
 import { AppInfoService } from "../../services/app-info.service";
-
-const DATA: MenuItemType[] = [
-  { title: "My Offers", icon: GithubIcon },
-  { title: "Notifications", icon: BookIcon },
-  { title: "Add Users", icon: BookIcon },
-  { title: "List Users", icon: BookIcon },
-];
+import {
+  getPermission,
+  getUserId,
+  getUserRole,
+  setRole,
+} from "../../services/util";
 
 const version: string = AppInfoService.getVersion();
 
-export const HomeDrawer = ({ navigation }): DrawerElement => {
+export const HomeDrawer = ({ navigation, role }): DrawerElement => {
+  let DATA: MenuItemType[] = [
+    { title: "My Offers", icon: TrendingIcon },
+    { title: "Update Profile", icon: UserUpdateIcon },
+  ];
+
+  if (role == "admin") {
+    DATA.push({ title: "Add Users", icon: UserAddIcon });
+  }
+
   const onItemSelect = (index: number): void => {
     switch (index) {
       case 0: {
@@ -36,7 +49,7 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
       }
       case 1: {
         navigation.toggleDrawer();
-        navigation.navigate("Libraries");
+        navigation.navigate("UpdateProfile");
         return;
       }
       case 2: {
@@ -54,9 +67,9 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
           size="giant"
           source={require("../../assets/images/image-app-icon.png")}
         />
-        <Text style={styles.profileName} category="h6">
+        {/* <Text style={styles.profileName} category="h6">
           My Offer
-        </Text>
+        </Text> */}
       </View>
     </Layout>
   );

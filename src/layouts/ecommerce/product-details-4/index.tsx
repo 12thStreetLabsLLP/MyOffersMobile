@@ -6,6 +6,8 @@ import {
   ListRenderItemInfo,
   ScrollView,
   View,
+  Share,
+  StyleSheet,
 } from "react-native";
 import {
   Button,
@@ -68,6 +70,36 @@ export default ({ navigation, route }): React.ReactElement => {
     </Button>
   );
 
+  const onShare = async (text) => {
+    try {
+      const result = await Share.share({
+        message: text,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const stylesIcon = StyleSheet.create({
+    icon: {
+      width: 32,
+      height: 32,
+      alignSelf: "flex-end",
+    },
+    backdrop: {
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+  });
+
   const renderBookingFooter = (): React.ReactElement => (
     <View>
       <Text category="s1">Facilities</Text>
@@ -87,21 +119,22 @@ export default ({ navigation, route }): React.ReactElement => {
         <Text style={styles.title} category="h6">
           {offerDetails.title}
         </Text>
-        <Text style={styles.rentLabel} appearance="hint" category="p2">
-          Coupon Code
-        </Text>
-        <Text style={styles.priceLabel} category="h6">
-          {offerDetails.code}
-        </Text>
+
         <Text style={styles.rentLabel} appearance="hint" category="p2">
           Location
         </Text>
         <Text style={styles.priceLabel} category="h6">
           {offerDetails.location}
         </Text>
+        <Icon
+          onPress={() => onShare(offerDetails.title)}
+          style={stylesIcon.icon}
+          fill="#999999"
+          name="share"
+        />
       </Card>
       <Text style={styles.sectionLabel} category="s1">
-        About
+        Offer details
       </Text>
       <Text style={styles.description} appearance="hint">
         {offerDetails.description}

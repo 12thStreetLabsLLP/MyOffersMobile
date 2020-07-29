@@ -8,6 +8,7 @@ import { AuthListScreen } from "../scenes/auth/auth-list.component";
 import { SignIn4Screen } from "../scenes/auth/sign-in-4.component";
 
 import { AddUserScreen } from "../scenes/auth/add-user.component";
+import { UpdateUserScreen } from "../scenes/auth/update-profile.component";
 import { ForgotPasswordScreen } from "../scenes/auth/forgot-password.component";
 import { OTPVerificationScreen } from "../scenes/auth/otp-verification.component";
 
@@ -28,6 +29,7 @@ export const AuthNavigator = ({ client }): React.ReactElement => (
     <Stack.Screen name="SignIn4" component={SignIn4Screen} />
 
     <Stack.Screen name="SignUp4" component={AddUserScreen} />
+    <Stack.Screen name="UpdateUser" component={UpdateUserScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
   </Stack.Navigator>

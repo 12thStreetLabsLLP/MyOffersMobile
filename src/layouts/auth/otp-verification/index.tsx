@@ -2,21 +2,27 @@ import React, { useEffect } from "react";
 import { StyleSheet, View, Platform } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { ImageOverlay } from "./extra/image-overlay.component";
-import { EmailIcon } from "./extra/icons";
+import { OtpNumberIcon } from "./extra/icons";
+
 import { KeyboardAvoidingView } from "./extra/3rd-party";
 import { withApollo, useApolloClient } from "react-apollo";
 import { AsyncStorage } from "react-native";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import makeApolloClient from "../../../services/apollo";
-import { getExpoPushToken, signIn } from "../../../services/util";
+import {
+  getExpoPushToken,
+  signIn,
+  setUserId,
+  setRole,
+} from "../../../services/util";
 import Spinner from "react-native-loading-spinner-overlay";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 
 export default ({ navigation, route }): React.ReactElement => {
-  const [otp, setOTP] = React.useState<string>();
+  const [otp, setOTP] = React.useState<string>("");
   const { name } = route.params;
   let [Loading, setLoading] = React.useState<boolean>(false);
 
@@ -76,31 +82,50 @@ export default ({ navigation, route }): React.ReactElement => {
     console.log("device Token" + deviceToken);
     console.log("name" + name);
     console.log("otp" + otp);
-    alert(deviceToken);
+    let newToken = "";
+
+    if (Constants.isDevice) {
+      if (deviceToken) {
+        newToken = deviceToken;
+      }
+    } else {
+      newToken = "notabletomanagetoget";
+    }
+
     verifyOTP({
       variables: {
-        deviceToken: deviceToken,
+        deviceToken: newToken,
         name: "+91" + name,
         verifyCode: otp,
       },
     }).then(
       (res) => {
         console.log(res);
-        alert("new token");
-        alert(res.data.customerOTPVerification.data.accessToken);
 
-        let updatedTokenId = res.data.customerOTPVerification.data.accessToken;
-        let userId = res.data.customerOTPVerification.data.id;
-        let roleId = res.data.customerOTPVerification.data.roleId;
-        console.log("Got new token");
-        console.log(updatedTokenId);
-        signIn(updatedTokenId, userId, roleId);
-        console.log("saved the new user token");
+        let verificationData = res.data.customerOTPVerification;
 
-        makeApolloClient(updatedTokenId);
-        setLoading(false);
+        if (verificationData.status != "error") {
+          let userData = verificationData.data;
+          let updatedTokenId = userData.accessToken;
+          let userId = userData.userId;
+          let roleId = userData.userRole;
+          console.log("Got new token");
+          console.log(updatedTokenId);
+          console.log("userId");
+          console.log(userId);
+          signIn(updatedTokenId);
+          setUserId(userId.toString());
+          setRole(roleId);
+          console.log("saved the new user token");
 
-        navigation.navigate("ProductListing");
+          makeApolloClient(updatedTokenId);
+          setLoading(false);
+          navigation.navigate("ProductListing");
+        } else {
+          setLoading(false);
+          alert("Something went wrong.");
+          navigation.navigate("ProductListing");
+        }
       },
       (err) => {
         setLoading(false);
@@ -130,12 +155,12 @@ export default ({ navigation, route }): React.ReactElement => {
           <Input
             status="control"
             placeholder="OTP"
-            icon={EmailIcon}
+            icon={OtpNumberIcon}
             value={otp}
             onChangeText={setOTP}
           />
         </View>
-        <Button size="giant" onPress={onVerifyOTP}>
+        <Button size="giant" onPress={onVerifyOTP} disabled={otp.length == 0}>
           VERIFY OTP
         </Button>
       </ImageOverlay>
