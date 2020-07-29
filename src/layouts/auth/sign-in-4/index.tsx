@@ -27,7 +27,6 @@ export default ({ navigation }): React.ReactElement => {
       }
     }
   `;
-  navigation.navigate("ProductListing");
   const fetchToken = async () => {
     // fetch token
     const tokenId = getToken();
