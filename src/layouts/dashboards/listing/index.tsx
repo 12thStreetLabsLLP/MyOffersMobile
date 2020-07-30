@@ -21,11 +21,9 @@ import { Icon } from "@ui-kitten/components";
 let trainings: Training[] = [];
 
 export default ({ navigation, gps, r }): React.ReactElement => {
-  const [location, setLocation] = React.useState<any>(null);
-  const [packageSearch, setPackageSearch] = useState<string>("");
-  const [result, setResult] = useState<string>("");
   const [offerslist, setOfferslist] = useState<any>();
 
+  //this is the only case the api is returning data. Please remove it once api is fixed.
   let radius = 100000000;
 
   const renderItemHeader = (
@@ -44,42 +42,10 @@ export default ({ navigation, gps, r }): React.ReactElement => {
       });
   };
 
-  getOffers(
-    gps.coords.latitude.toString(),
-    gps.coords.longitude.toString(),
-    radius
-  ).then((res) => {
-    let { data } = res;
-
-    console.log("---------Got Result--------------");
-    console.log(data);
-
-    let offers = data && data.getNearestOffers ? data.getNearestOffers : [];
-    if (offers.length == 0) {
-      trainings = [];
-    }
-    offers.forEach((res) => {
-      trainings.push(
-        new Training(
-          res.title,
-          30,
-          150,
-          res.image,
-          res.text,
-          res.Address.addresss,
-          "FUNCODE"
-        )
-      );
-    });
-
-    setOfferslist(trainings);
-  });
-
   const getOffersData = async (gps) => {
     console.log("gps");
-    console.log(gps);
-    alert(gps.coords.latitude);
-    alert(gps.coords.longitude);
+    console.log(gps.coords.latitude);
+
     const { data } = await getOffers(
       gps.coords.latitude,
       gps.coords.longitude,
@@ -88,7 +54,7 @@ export default ({ navigation, gps, r }): React.ReactElement => {
 
     if (data) {
       trainings = [];
-      //console.log(data);
+
       const offers = data.getNearestOffers;
 
       offers.forEach((res) => {
@@ -104,17 +70,16 @@ export default ({ navigation, gps, r }): React.ReactElement => {
           )
         );
       });
-
-      //alert(trainings);
+      console.log("trainings count");
+      console.log(trainings.length);
     } else {
-      alert("no data");
+      console.log("trainings count");
+      console.log(trainings.length);
+      //alert("no data");
     }
   };
 
-  // if (gps) {
-  //   console.log(gps);
-  //getOffersData(gps);
-  // }
+  getOffersData(gps);
 
   const onShare = async (text) => {
     try {
@@ -182,7 +147,7 @@ export default ({ navigation, gps, r }): React.ReactElement => {
   //getOffersData(gps);
   if (trainings.length > 0) {
     return (
-      <List style={styles.list} data={offerslist} renderItem={renderItem} />
+      <List style={styles.list} data={trainings} renderItem={renderItem} />
     );
   } else {
     return <Text>Not found</Text>;

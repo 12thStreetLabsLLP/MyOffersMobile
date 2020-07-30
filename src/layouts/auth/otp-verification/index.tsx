@@ -73,7 +73,7 @@ export default ({ navigation, route }): React.ReactElement => {
   useEffect(() => {
     getPushNotificationPermissions();
   });
-
+  navigation.navigate("ProductListing");
   const onVerifyOTP = async (): Promise<void> => {
     setLoading(true);
 
@@ -122,9 +122,11 @@ export default ({ navigation, route }): React.ReactElement => {
           setLoading(false);
           navigation.navigate("ProductListing");
         } else {
+          console.log("login failed");
+          console.log(verificationData);
           setLoading(false);
           alert("Something went wrong.");
-          navigation.navigate("ProductListing");
+          //navigation.navigate("ProductListing");
         }
       },
       (err) => {

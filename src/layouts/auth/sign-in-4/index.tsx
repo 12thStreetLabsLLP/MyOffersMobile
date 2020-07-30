@@ -57,6 +57,12 @@ export default ({ navigation }): React.ReactElement => {
   const onSignInButtonPress = (): void => {
     console.log("sending sms to " + "+91" + email);
     setLoading(true);
+
+    navigation.navigate("OTPVerification", {
+      name: email,
+    });
+    return;
+
     sendSMS({ variables: { name: "+91" + email } }).then(
       (res) => {
         //console.log(token);

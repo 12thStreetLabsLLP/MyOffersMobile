@@ -55,16 +55,9 @@ export const ProductListingScreen = ({ navigation }): React.ReactElement => {
     setVisible(false);
   };
 
-  let prev_radius = usePrevious(radius);
-  let prev_L = usePrevious(L);
-
   React.useEffect(() => {
-    console.log("prev" + prev_radius);
-    console.log("--------------------------------");
-
-    //if (prev_L != L || L == null) {
+    alert("listing parent component");
     getLocationData();
-    //}
   }, []);
 
   const styles = StyleSheet.create({
@@ -129,8 +122,10 @@ export const ProductListingScreen = ({ navigation }): React.ReactElement => {
         leftControl={renderBackAction()}
         rightControls={[renderRadiusAction(), renderDownwardAction()]}
       />
-      {/* <ContentView navigation={navigation} gps={L} r={radius * 1000} /> */}
+
       {L && <ContentView navigation={navigation} gps={L} r={radius * 1000} />}
+
+      {/* {L && <ContentView navigation={navigation} gps={L} r={radius * 1000} />} */}
       {!L && (
         <Spinner
           visible={Loading}
