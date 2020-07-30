@@ -64,25 +64,15 @@ export const CategoriesScreen = ({ navigation }): React.ReactElement => {
       categoryData.push({ title: res.categoryName, id: res.categoryId });
     });
     /*set state*/
-    setCategory(categoryData);
+    //setCategory(categoryData);
   });
-
-  //categoryData.push({ title: "title", id: 1 });
-
-  // const getCategoriesData = (): void => {
-  //   navigation && navigation.navigate("ProductListing");
-  // };
-
-  // useEffect(() => {
-  //   getCategories().then((res) => {});
-  // }, []);
 
   return (
     <SafeAreaLayout style={styles.safeArea} insets="top">
       <TopNavigation title="Categories" leftControl={renderBackAction()} />
       <List
         contentContainerStyle={styles.listContent}
-        data={category}
+        data={data}
         renderItem={renderItem}
         ListHeaderComponent={renderHeader}
       />
