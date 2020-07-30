@@ -140,12 +140,7 @@ export default ({ navigation, gps, r }): React.ReactElement => {
     </TouchableOpacity>
   );
 
-  // trainings.push(
-  //   new Training("test", 30, 150, "test", "test", "test", "FUNCODE")
-  // );
-
-  //getOffersData(gps);
-  if (trainings.length > 0) {
+  if (trainings && trainings.length > 0) {
     return (
       <List style={styles.list} data={trainings} renderItem={renderItem} />
     );
